@@ -15,6 +15,10 @@ library(itcSegment)
 d1 <- raster("N:\\Data02\\bcal\\Personal\\Jake\\lil_plots\\los2_10m_lilv2.tif")
 plot(d1)
 
+values(d1) <- getValues(d1)
+
+
+str(d1)
 
 ##
 ## Function that detrends a raster object using the "EcoGenetics" package 
@@ -84,26 +88,61 @@ plot(dt3, main = "3rd order")
 ######################
 ######################
 
-dat <- d1
-values(dat) <- (getValues(dt2) + abs(min(getValues(dt2),na.rm = T))) 
-s <- raster(nrow=200, ncol=200)
-lil <- dat
-lil@ncols <- s@ncols
-lil@nrows <- s@nrows
 
-t <- resample(dat, lil, method = 'bilinear')
-plot(t)
+##
+## Function that performs segmentation of shrubs (or trees) using the R package "itcSegment" 
+##    inputs:
+##       rastIn = the raster object to be segmented
+##       ncol = number of columns to resample to.... if no resampling is desired ncol = rastIn@ncol
+##       ncol = number of rows to resample to.... if no resampling is desired nrow = rastIn@nrow 
+##       The remaining inputs are the arguments for itcIMG... for descriptions see https://cran.r-project.org/web/packages/itcSegment/itcSegment.pdf
+##       
+##    outputs:
+##       OP = list with two named "cells", OP$Raster is the resampled raster used for the segmentation, OP$ITC is the output from the itcIMG function
+
+AnnaShrubITC <- function(rastIn, ncol, nrow, espg, searchWinSize = 3, TRESHSeed = 0.4, TRESHCrown = 0.4, DIST = 10, th = 0, ischm = T){
+   
+   ## get values from where they don't exist and put them into themselves.... also makes all values positive
+   values(rastIn) <- (getValues(rastIn) + abs(min(getValues(rastIn),na.rm = T))) 
+
+   ## make a "dummy" raster with the desired number of rows and columns
+   s <- raster(nrow=nrow, ncol=ncol)
+
+   ## make "template" raster
+   lil <- rastIn
+
+   ## modify rows and columns
+   lil@ncols <- s@ncols
+   lil@nrows <- s@nrows
+
+   ## resample the raster (for faster computation times)
+   t <- resample(rastIn, lil, method = 'bilinear')
+
+   #### perform itc segmentation
+   OPitc <- itcIMG(t, epsg = epsg, searchWinSize = searchWinSize, TRESHSeed = TRESHSeed, TRESHCrown = TRESHCrown, DIST = DIST, th = th, ischm = ischm)
+   
+   # create output object comprising the resampled raster and the output  SpatialPolygonsDataFrame from "itcIMG"
+   OP <- list(t, OPitc)
+   names(OP) <- c("Raster","ITC")
+
+   # return output
+   return(OP) 
+}
+
+test <- AnnaShrubITC(dt2, 100, 100, 2789)
+
+# inspect output
+test
 
 
-#### now start playing with parameters....
-test <- itcIMG(t, epsg = 2789, searchWinSize = 3, TRESHSeed = .3, TRESHCrown = .5, DIST = 10, th = 0, ischm = T)
-crs(test) <- crs(dat)
-plot(t)
-plot(test, add = T)
+# visualize
+plot(test$Raster)
+plot(test$ITC, add = T)
 
 
-
-
+# shrub heights and crown areas
+test@data$Height_m
+test@data$CA_m2
 
 
 
