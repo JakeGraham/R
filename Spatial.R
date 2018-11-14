@@ -84,24 +84,33 @@ plot(dt3, main = "3rd order")
 ######################
 ######################
 
-dat <- dt2
+dat <- d1
+values(dat) <- (getValues(dt2) + abs(min(getValues(dt2),na.rm = T))) 
+s <- raster(nrow=200, ncol=200)
+lil <- dat
+lil@ncols <- s@ncols
+lil@nrows <- s@nrows
 
-crs(dat)<-crs(d1)
-crs(dat)
-
-newproj <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
-pr1 <- projectRaster(dat, crs=newproj)
-crs(pr1)
-
-test <- itcIMG(dat, epsg = 2789, searchWinSize = 21)
-
-
-uhm <- imgData
-test <- itcIMG(uhm, epsg = 32632)
+t <- resample(dat, lil, method = 'bilinear')
+plot(t)
 
 
+#### now start playing with parameters....
+test <- itcIMG(t, epsg = 2789, searchWinSize = 3, TRESHSeed = .3, TRESHCrown = .5, DIST = 10, th = 0, ischm = T)
+crs(test) <- crs(dat)
+plot(t)
+plot(test, add = T)
 
 
 
 
-rm(list=ls())
+
+
+
+
+
+
+
+
+
+
