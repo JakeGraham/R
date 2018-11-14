@@ -90,18 +90,18 @@ crs(dat)<-crs(d1)
 crs(dat)
 
 newproj <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
-pr1 <- projectRaster(dat, crs=newproj)
-crs(pr1)
+pr1 <- projectRaster(d1, crs=newproj)
 
 test <- itcIMG(dat, epsg = 2789, searchWinSize = 21)
 
 
-uhm <- imgData
-test <- itcIMG(uhm, epsg = 32632)
 
 
 
 
 
 
-rm(list=ls())
+
+
+
+
