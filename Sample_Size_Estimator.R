@@ -1,4 +1,4 @@
-#  Function to estimate confidence interval width (in the units of measurement) as a function of sample size (from knonw standard deviation)
+#  Function to estimate confidence interval width (in the units of measurement) as a function of sample size (from known standard deviation)
 #     inputs:
 #        SD: this is the only manditory value, it can be a vector or a single value. If it is a vector, the standard deviation of the vector is used. If it is a single number, this is used as the standard deviation   
 #        LowerBound: the MINIMUM sample size you wish to consider (default = 2)... !!! NOTE should be higher than 2
