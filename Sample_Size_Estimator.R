@@ -1,4 +1,4 @@
-#  Function to estimate confidence interval width (in the units of measurement) as a function of sample size (from known standard deviation)
+#  Function to estimate confidence interval width (in the units of measurement) as a function of sample size (from knonw standard deviation)
 #     inputs:
 #        SD: this is the only manditory value, it can be a vector or a single value. If it is a vector, the standard deviation of the vector is used. If it is a single number, this is used as the standard deviation   
 #        LowerBound: the MINIMUM sample size you wish to consider (default = 2)... !!! NOTE should be higher than 2
@@ -25,13 +25,14 @@ SS_Est <- function(SD, LowerBound = 2, UpperBound = 100, alpha = 0.05, DesiredCI
       ME <- qt(1-(alpha/2), DF)*SE
       CI[i - LowerBound + 1] <- 2*ME
    }
-   if(min(CI, na.rm = T) > DesiredCI){
-      print("WARNING!!! You need a larger sample size than currently provided by 'UpperBound'. Increase 'UpperBOund'")
-   }
-   if(!DesiredCI){
+
+   if(!length(DesiredCI)){
       plot(LowerBound:UpperBound, CI, bty = "l", pch = 16, cex = 2, ylab = paste((1-alpha)*100, "% Confidence Interval Width (in units of measurement)", sep = ""), type = "o", xlab = "Sample Size (n)")
    }
-   if(DesiredCI){
+   if(length(DesiredCI)){
+      if(min(CI, na.rm = T) > DesiredCI){
+         print("WARNING!!! You need a larger sample size than currently provided by 'UpperBound'. Increase 'UpperBOund'")
+      }
       if(length(which(CI > DesiredCI))){
          SS <- max(which(CI > DesiredCI), na.rm = T) + LowerBound
          plot(LowerBound:UpperBound, CI, bty = "l", pch = 16, cex = 2, ylab = paste((1-alpha)*100, "% Confidence Interval Width", sep = ""), type = "o", xlab = "Sample Size (n)")
@@ -53,7 +54,7 @@ SS_Est <- function(SD, LowerBound = 2, UpperBound = 100, alpha = 0.05, DesiredCI
 
 
 # example using the a standard deviation = 5 and a desired confidence interval under 10 (in the units of measurement)
-Ex1<-SS_Est(5, DesiredCI = 10)
+Ex1<-SS_Est(5)
 
 # full data frame
 Ex1$DF
