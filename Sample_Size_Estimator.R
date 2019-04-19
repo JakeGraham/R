@@ -18,7 +18,6 @@ SS_Est <- function(SD, LowerBound = 2, UpperBound = 100, alpha = 0.05, DesiredCI
       SD <- sd(SD, na.rm = T)
    }
    CI <- rep(NA, length(LowerBound:UpperBound))
-   SD <- 5
    for(i in LowerBound:UpperBound){
       DF <- i - 1
       SE <- SD/sqrt(i)
@@ -31,7 +30,7 @@ SS_Est <- function(SD, LowerBound = 2, UpperBound = 100, alpha = 0.05, DesiredCI
    }
    if(length(DesiredCI)){
       if(min(CI, na.rm = T) > DesiredCI){
-         print("WARNING!!! You need a larger sample size than currently provided by 'UpperBound'. Increase 'UpperBOund'")
+         print("WARNING!!! You need a larger sample size than currently provided by 'UpperBound'. Increase 'UpperBound'")
       }
       if(length(which(CI > DesiredCI))){
          SS <- max(which(CI > DesiredCI), na.rm = T) + LowerBound
