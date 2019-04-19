@@ -53,7 +53,7 @@ SS_Est <- function(SD, LowerBound = 2, UpperBound = 100, alpha = 0.05, DesiredCI
 
 
 # example using the a standard deviation = 5 and a desired confidence interval under 10 (in the units of measurement)
-Ex1<-SS_Est(5)
+Ex1<-SS_Est(5, DesiredCI = 10)
 
 # full data frame
 Ex1$DF
